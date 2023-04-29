@@ -20,7 +20,7 @@ void * allocSharedMemory(int size)
 	void * ptr; 
 
 	key = ftok("keyfile", KEY); 
-	shmid = shmget(key, size, IPC_CREAT | 644); 
+	shmid = shmget(key, size, IPC_CREAT | 777); 
 	if (shmid == -1)
 	{
 		perror("shmget error"); 
@@ -59,6 +59,10 @@ int openMsgQueue(int msgid)
 	return msgqueue;
 }
 
+void deleteMsgQueue(int msgid)
+{
+	msgctl(msgid, IPC_RMID, NULL); 
+}
 
 int sendKvMsg(int msgid, int key, char * value, int type)
 {
@@ -70,14 +74,20 @@ int sendKvMsg(int msgid, int key, char * value, int type)
 	//kvItem.value = value; 
 	kvItem.type = type; 
 
-	rc = msgsnd(msgid, (void *)&kvItem, sizeof(struct kvMsg), 0);
+	puts("z");
+	printf("size: %ld", sizeof(struct kvMsg));
+	puts("z");
+	rc = msgsnd(msgid, (void *)&kvItem, sizeof(struct kvMsg), IPC_NOWAIT);
+	printf("rc: %d\n", rc); 
+	
 	if (rc == -1)
 		perror("Send message failed");
-	
+	puts("v");
+
 	return rc; 
 }
 
-int receiveKvMsg(int msgid, int *key, int *value, int *type)
+int receiveKvMsg(int msgid, int *key, char *value, int *type)
 {
 	int rc; 
 	struct kvMsg * kvItem;
@@ -86,12 +96,15 @@ int receiveKvMsg(int msgid, int *key, int *value, int *type)
 	if (kvItem == NULL)
 		Exit("Memory allocation error.\n"); 
 
-	rc = msgrcv(msgid, kvItem, sizeof(struct kvMsg), 0, 0); 
-	if (rc == -1)
-		perror("Receiving message failed");
+	rc = msgrcv(msgid, kvItem, sizeof(struct kvMsg), 0, IPC_NOWAIT); 
+	if (rc == -1){
+
+	}
+		// No message to receive 
+		//	perror("Receiving message failed");
 	else{
 		*key = kvItem->key;
-		*value = kvItem->value; 
+		strncpy(value, kvItem->value, VALSIZE); 
 		*type = kvItem->type;
 		free(kvItem);
 	}

@@ -25,9 +25,8 @@
 
 int msgqueue; // ID of message queue for key-value request.  
 kv_data * memtable; 
-
-
-
+int* memtable_idx; // the number of stored data in memtable. 
+int data_idx = 0; // Total order of data inserted. 
 
 int pid[MAX_PROCESS]; 
 int MainProcessID, IOProcessID, MergeProcessID;
@@ -38,10 +37,15 @@ int main()
 	int ProcessType; 
 	
 	memtable = (kv_data *)allocSharedMemory(sizeof(struct kv_data) * 3);
-	msgqueue = createMsgQueue(); 
+	memtable_idx = (int *)allocSharedMemory(sizeof(int)); 
+	*memtable_idx = 0; 
+
+
+	msgqueue = createMsgQueue();
+	printf("msgqueue: %d\n", msgqueue); 
 	ProcessType = fork_processes();
 
-	printf("%d\n", msgqueue);
+	//printf("%d\n", msgqueue);
 
 	switch(ProcessType)
 	{
@@ -78,14 +82,75 @@ int fork_processes()
 
 void doMain()
 {
-	int key, value, type, rc; 
-	
+	int key, type, rc; 
+	char value[20]; 	
 	signal(SIGINT, sigint_handler); 
+	signal(SIGUSR1, io_request_handler); 
+	/*
 
-	memtable[0].key = 123; 
-	rc = receiveKvMsg(msgqueue, &key, &value, &type);
-	printf("received item\nkey: %d\nvalue: %d\n", key, value);
+	Job of the Main process
+	1. Handle IO request from IO Process
+	2. Send Merge request to Merge Process (when merge mode is set, )
+
+
+	// Loop until SIGINT signal is received. 
+	while(1)
+	{
+
+
+	}
+
+
+
+	 */
+
+	//memtable[0].key = 123; 
+	//rc = receiveKvMsg(msgqueue, &key, &value, &type);
+	//printf("received item\nkey: %d\nvalue: %d\n", key, value);
 	while(1); 
+}
+
+void io_request_handler(int signo)
+{
+	int rc, key, type;
+	char value[VALSIZE];
+	
+	printf("mem_idx before: %d\n", *memtable_idx);
+
+	rc = receiveKvMsg(msgqueue, &key, value, &type); 
+	if (rc == -1) 
+		printf("This code should not be reached\n"); 
+
+	printf("A - mem_idx before: %d\n", *memtable_idx);
+	// if type is PUT, then put key&value pair to memtable. 
+	if (type == PUT)
+	{
+		// TODO: lock should be held
+		memtable[*memtable_idx].key = key; 
+		printf("B - mem_idx before: %d\n", *memtable_idx);
+		strncpy(memtable[*memtable_idx].value, value, VALSIZE); 
+		printf("C - mem_idx before: %d\n", *memtable_idx);
+		memtable[*memtable_idx].idx = data_idx; 
+		printf("D - mem_idx before: %d\n", *memtable_idx);
+		*memtable_idx = *memtable_idx + 1; 
+		printf("E - mem_idx before: %d\n", *memtable_idx);
+		data_idx ++; 
+		// TODO: lock should be held
+		
+		if (*memtable_idx == MAX_MEMTABLE)
+		{
+			// send signal to MergeProcess to make it flush the memtable
+			kill(MergeProcessID, SIGUSR1);
+			//signal(SIGUSR1, MergeProcessID); 
+		}		
+		printf("put request is well handled. mem_idx: %d\n", *memtable_idx); 
+	}
+	// if type is GET, then find the key from memtable and sstable and send them to IOprocess.
+	else{
+		//TODO: Get Request handldler. 
+	}
+
+
 }
 
 
@@ -97,7 +162,9 @@ void sigint_handler (int signo)
 	kill(MergeProcessID, SIGINT); 
 
 	// Do some necessary jobs like flushing memtable to storage or something 
-		
+
+	deleteMsgQueue(msgqueue); 
+
 
 
 	// Kill itself

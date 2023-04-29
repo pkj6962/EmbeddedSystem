@@ -1,0 +1,68 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BACKKEY	device.h	1;"	d
+CC	Makefile	/^CC = gcc $/;"	m
+DOWN	io.c	13;"	d	file:
+ERRLOG	main.c	24;"	d	file:
+Exit	util.c	/^void Exit(const char * msg)$/;"	f
+GET	io.c	7;"	d	file:
+GET	io.h	5;"	d
+IOMode	io.c	/^int IOMode = 0; $/;"	v
+IOProcessID	main.c	/^int MainProcessID, IOProcessID, MergeProcessID;$/;"	v
+IO_PROCESS	main.c	21;"	d	file:
+KEY	ipc.h	3;"	d
+MAIN_PROCESS	main.c	22;"	d	file:
+MAX_MEMTABLE	global.h	6;"	d
+MAX_PROCESS	main.c	19;"	d	file:
+MERGE	io.c	8;"	d	file:
+MERGE	io.h	6;"	d
+MERGE_PROCESS	main.c	20;"	d	file:
+MODENUM	io.c	10;"	d	file:
+MainProcessID	main.c	/^int MainProcessID, IOProcessID, MergeProcessID;$/;"	v
+MergeProcessID	main.c	/^int MainProcessID, IOProcessID, MergeProcessID;$/;"	v
+NOOP	io.c	9;"	d	file:
+OBJS	Makefile	/^OBJS = io.o merge.o main.o ipc.o device.o util.o$/;"	m
+PUT	io.c	6;"	d	file:
+PUT	io.h	4;"	d
+SRCS	Makefile	/^SRCS = io.c merge.c main.c ipc.c device.c util.c$/;"	m
+TARGET	Makefile	/^TARGET = kvstore_exe$/;"	m
+UP	io.c	12;"	d	file:
+VALSIZE	global.h	7;"	d
+VALSIZE	io.c	15;"	d	file:
+VALSIZE	ipc.h	4;"	d
+VOLDOWN	device.h	3;"	d
+VOLUP	device.h	2;"	d
+allocSharedMemory	ipc.c	/^void * allocSharedMemory(int size)$/;"	f
+createMsgQueue	ipc.c	/^int createMsgQueue()$/;"	f
+data_idx	main.c	/^int data_idx = 0; \/\/ Total order of data inserted. $/;"	v
+device_read_data_key	device.c	/^int device_read_data_key()$/;"	f
+device_read_data_value	device.c	/^void device_read_data_value (char * value)$/;"	f
+doIO	io.c	/^void doIO()$/;"	f
+doMain	main.c	/^void doMain()$/;"	f
+doMerge	merge.c	/^void doMerge()$/;"	f
+fork_processes	main.c	/^int fork_processes()$/;"	f
+idx	global.h	/^	int idx;$/;"	m	struct:kv_data
+io_request_handler	main.c	/^void io_request_handler(int signo)$/;"	f
+key	global.h	/^	int key; $/;"	m	struct:kv_data
+key	ipc.h	/^	int key; $/;"	m	struct:kvMsg
+kvMsg	ipc.h	/^struct kvMsg$/;"	s
+kv_data	global.h	/^typedef struct kv_data{$/;"	s
+kv_data	global.h	/^}kv_data;$/;"	t	typeref:struct:kv_data
+main	main.c	/^int main()$/;"	f
+memtable	main.c	/^kv_data * memtable; $/;"	v
+memtable_idx	main.c	/^int memtable_idx = 0; \/\/ the number of stored data in memtable. $/;"	v
+mode_change	io.c	/^void mode_change(int direction)$/;"	f
+msgqueue	main.c	/^int msgqueue; \/\/ ID of message queue for key-value request.  $/;"	v
+openMsgQueue	ipc.c	/^int openMsgQueue(int msgid)$/;"	f
+pid	main.c	/^int pid[MAX_PROCESS]; $/;"	v
+processExit	io.c	/^void processExit()$/;"	f
+receiveKvMsg	ipc.c	/^int receiveKvMsg(int msgid, int *key, char *value, int *type)$/;"	f
+sendKvMsg	ipc.c	/^int sendKvMsg(int msgid, int key, char * value, int type)$/;"	f
+sigint_handler	main.c	/^void sigint_handler (int signo)$/;"	f
+type	ipc.h	/^	int type; $/;"	m	struct:kvMsg
+value	global.h	/^	char value[VALSIZE]; $/;"	m	struct:kv_data
+value	ipc.h	/^	char value[VALSIZE]; $/;"	m	struct:kvMsg

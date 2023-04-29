@@ -1,6 +1,6 @@
 CC = gcc 
-OBJS = io.o merge.o main.o ipc.o util.o
-SRCS = io.c merge.c main.c ipc.c util.c
+OBJS = io.o merge.o main.o ipc.o device.o util.o
+SRCS = io.c merge.c main.c ipc.c device.c util.c
 TARGET = kvstore_exe
 
 all: $(TARGET)
@@ -18,6 +18,9 @@ main.o: main.c main.h
 
 ipc.o: ipc.c ipc.h
 	$(CC) -c -o ipc.o ipc.c
+
+device.o: device.c device.h 
+	$(CC) -c -o device.o device.c 
 
 util.o: util.c util.h
 	$(CC) -c -o util.o util.c

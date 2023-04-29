@@ -18,5 +18,7 @@ void * allocSharedMemory(int size);
 
 int createMsgQueue(); 
 int openMsgQueue(int msgid); 
+void deleteMsgQueue(int msgid); 
+
 int sendKvMsg(int msgid, int key, char * value, int type);
-int receiveKvMsg(int msgid, int *key, int * value, int *type);
+int receiveKvMsg(int msgid, int *key, char * value, int *type);

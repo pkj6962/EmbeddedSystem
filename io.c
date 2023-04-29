@@ -24,35 +24,37 @@ void doIO()
 	int modekey;
 	int key;
 	char value[VALSIZE];
-
+	IOMode = PUT; 
 	while(1)
 	{
-		modekey = BACKKEY;//device_read_mode_key();
+		modekey = NOOP;//device_read_mode_key();
 		switch(modekey)
 		{
 			case BACKKEY: processExit(); break; 
-			case VOLUP: mode_change(UP); //device_init(); break;
-			case VOLDOWN: mode_change(DOWN); //device_init(); break; 
+			case VOLUP: mode_change(UP); break; //device_init(); break;
+			case VOLDOWN: mode_change(DOWN); break; //device_init(); break; 
 			default:
 				;
 		};
 
 		switch(IOMode)
 		{
-			case NOOP:
+			case NOOP: break;
 			case PUT: 
 			case GET:
-				//key = device_read_data_key();
-				//device_read_data_value(value); 
-				sendKvMsg(msgqueue, key, value, IOMode); 
+				key = device_read_data_key();
+				if (IOMode == PUT) device_read_data_value(value); 
+				int rc = sendKvMsg(msgqueue, key, value, IOMode); 
+				printf("rc: %d\n",rc);
+				kill(MainProcessID, SIGUSR1); 
 				break; 
-			case MERGE:
+			case MERGE: break; 
 			default:
 				; 
 		}
 
 		modekey = NOOP ;
-		IOMode = NOOP; 
+		//IOMode = NOOP; 
 
 	}
 	
@@ -66,6 +68,7 @@ void processExit()
 	sleep(5);
 	printf("processExit function called\n"); 
 	kill(MainProcessID, SIGINT); 
+
 	exit(-1); 
 }
 
